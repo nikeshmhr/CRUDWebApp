@@ -33,7 +33,8 @@ public class DatabaseConfig {
     @Bean
     public DataSource dataSource() throws IOException {
         System.out.println("HOST " + env.getProperty("jdbc.host"));
-        DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty("jdbc.host"), env.getProperty("jdbc.username"), env.getProperty("jdbc.password"));
+        DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty("jdbc.host"), 
+                env.getProperty("jdbc.username"), env.getProperty("jdbc.password"));
         dataSource.setDriverClassName(env.getProperty("jdbc.driver"));
         return dataSource;
     }
