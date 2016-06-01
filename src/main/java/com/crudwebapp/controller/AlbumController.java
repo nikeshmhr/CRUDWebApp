@@ -2,19 +2,23 @@ package com.crudwebapp.controller;
 
 import com.crudwebapp.model.Album;
 import com.crudwebapp.service.AlbumService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
  * @author nikesh.maharjan
  */
-@Controller
+@RestController
 @RequestMapping(value = "/albums")
 public class AlbumController {
 
@@ -22,10 +26,18 @@ public class AlbumController {
     private AlbumService albumService;
 
     @RequestMapping(method = GET)
-    public String showListOfAlbums(Model model) {
-        model.addAttribute(albumService.readAlbums());
+    public ResponseEntity<List<Album>> showListOfAlbums() {
+        List<Album> albumsList = albumService.readAlbums();
 
-        return "listAlbums";
+        if (albumsList == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        } else if (albumsList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        }
+
+        return new ResponseEntity<>(albumsList, HttpStatus.OK);
+
+        //return "listAlbums";
     }
 
     @RequestMapping(method = GET, value = "/add")

@@ -5,11 +5,27 @@
  */
 
 
-app.controller('ListAlbumsController', function($scope){
-    $scope.addMore = false;
-    
-    $scope.showAddMore = function(){
-        $scope.addMore = true;
-    };
-    
-});
+app.controller('ListAlbumsController', ['$scope', 'AlbumService', function ($scope, AlbumService) {
+        $scope.addMore = false;
+
+        $scope.albumsList = {};
+
+        $scope.showAddMore = function () {
+            $scope.addMore = true;
+        };
+
+        $scope.fetchAllAlbums = function () {
+            AlbumService.fetchAllAlbums()
+                    .then(
+                            function (d) {
+                                $scope.albumsList = d;
+                            },
+                            function (errResponse) {
+                                console.error('Error while fetching');
+                            }
+                    );
+        };
+
+        $scope.fetchAllAlbums();
+
+    }]);
