@@ -8,7 +8,11 @@
 app.controller('ListAlbumsController', ['$scope', 'AlbumService', function ($scope, AlbumService) {
         $scope.addMore = false;
 
-        $scope.albumsList = {};
+        $scope.album = {id: '', albumTitle: '', band: '', year: '', noOfTracks: ''};
+
+        var jsonAlbumData = "";
+
+        $scope.albumsList = [];
 
         $scope.showAddMore = function () {
             $scope.addMore = true;
@@ -27,5 +31,29 @@ app.controller('ListAlbumsController', ['$scope', 'AlbumService', function ($sco
         };
 
         $scope.fetchAllAlbums();
+
+        $scope.submitAdd = function () {
+            jsonAlbumData = $scope.album;
+        }
+
+        $scope.addAlbum = function () {
+            AlbumService.createAlbum(jsonAlbumData)
+                    .then(
+                            $scope.fetchAllAlbums,
+                            function (error) {
+                                console.error("error while adding");
+                            }
+                    );
+        };
+
+        $scope.deleteAlbum = function (id) {
+            AlbumService.deleteAlbum(id)
+                    .then(
+                            $scope.fetchAllAlbums,
+                            function (error) {
+                                console.error("error while deleting");
+                            }
+                    );
+        };
 
     }]);

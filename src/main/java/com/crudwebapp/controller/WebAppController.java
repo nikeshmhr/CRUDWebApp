@@ -30,7 +30,8 @@ public class WebAppController {
 
     @RequestMapping(value = {"login", "/"}, method = GET)
     public String showLoginPage(HttpServletRequest req) {
-        return "redirect:/albums";
+//        return "redirect:/albums";
+        return "listAlbumsAngular";
 //        HttpSession s = req.getSession(false);
 //        if (s == null) {
 //            return "login";

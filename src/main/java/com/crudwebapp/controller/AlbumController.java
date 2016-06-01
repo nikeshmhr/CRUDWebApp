@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,27 +41,27 @@ public class AlbumController {
         //return "listAlbums";
     }
 
-    @RequestMapping(method = GET, value = "/add")
-    public String showAddPage() {
-        return "addAlbum";
-    }
-
+//    @RequestMapping(method = GET, value = "/add")
+//    public String showAddPage() {
+//        return "addAlbum";
+//    }
     @RequestMapping(method = POST, value = "/add")
-    public String processAdd(Album album, RedirectAttributes redir) {
+    public ResponseEntity<Void> processAdd(@RequestBody Album album) {
+        Album addedAlbum = albumService.addAlbum(album);
         if (albumService.addAlbum(album) == null) {
-            redir.addFlashAttribute("errorMessage", "Failed to add album.");
-            return "redirect:/albums/add";
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-            return "redirect:/albums";
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
 
-    @RequestMapping(method = GET, value = "/delete/{id}")
-    public String processDelete(@PathVariable int id, RedirectAttributes redir) {
-        if (albumService.deleteAlbum(id) == 0) {
-            redir.addFlashAttribute("errorMessage", "Failed to delete album with id " + id);
+    @RequestMapping(method = DELETE, value = "/delete/{id}")
+    public ResponseEntity<Integer> processDelete(@PathVariable int id) {
+        int deleteAlbum = albumService.deleteAlbum(id);
+        if (deleteAlbum == 0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return "redirect:/albums";
+        return new ResponseEntity<>(id, HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(method = GET, value = "/update/{id}")
